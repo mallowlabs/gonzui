@@ -2,7 +2,7 @@
 
 * http://gonzui.sourceforge.net/index.html.en
 * Gem version
- * http://github.com/mallowlabs/gonzui
+  * http://github.com/mallowlabs/gonzui
 
 == DESCRIPTION:
 
@@ -101,29 +101,29 @@ For further information on usage, try --help option of each command.
 == REQUIREMENTS:
 * Ruby 1.8.2+
 * bdb 4.2+ (Berkeley DB)
- * $ sudo apt-get install ilbdb-dev
+  * $ sudo apt-get install ilbdb-dev
 
 === Ruby Libraries
 * langscan 1.2+
- * $ sudo gem install langscan
+  * $ sudo gem install langscan
 * bdb for Ruby 0.5.2+
- * $ sudo apt-get install libdb-ruby1.8
+  * $ sudo apt-get install libdb-ruby1.8
 
 == Optional Software
 The following software is not required but useful.
 * Archive Handling
- * tar (.tar.*)
- * gunzip (.tar.gz)
- * bunzip2 (.tar.bz2)
- * uncompress (.tar.Z)
- * unzip (.zip)
- * lha (.lzh)
- * rpm, rpmbuild (.src.rpm)
+  * tar (.tar.*)
+  * gunzip (.tar.gz)
+  * bunzip2 (.tar.bz2)
+  * uncompress (.tar.Z)
+  * unzip (.zip)
+  * lha (.lzh)
+  * rpm, rpmbuild (.src.rpm)
 * Source Code Fetcher
- * apt-get (gonzui-import --apt)
+  * apt-get (gonzui-import --apt)
 * Version Control Systems
- * cvs (gonzui-import --cvs)
- * svn (gonzui-import --svn)
+  * cvs (gonzui-import --cvs)
+  * svn (gonzui-import --svn)
 
 == INSTALL:
 
@@ -131,8 +131,8 @@ The following software is not required but useful.
 
 == LICENSE:
 Copyright (C) 2004-2005 Satoru Takabayashi <satoru@namazu.org>
-    All rights reserved.
-    This is free software with ABSOLUTELY NO WARRANTY.
+All rights reserved.
+This is free software with ABSOLUTELY NO WARRANTY.
 
 You can redistribute it and/or modify it under the terms of
 the GNU General Public License version 2.
