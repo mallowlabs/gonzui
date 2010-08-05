@@ -26,8 +26,13 @@ end
 require "gonzui/util"
 require "gonzui/gettext"
 
+begin # for Rake task
 require 'gonzui/autopack'
 require 'gonzui/delta'
+require "gonzui/texttokenizer"
+rescue LoadError
+end
+
 require "gonzui/dbm"
 require "gonzui/bdbdbm"
 require "gonzui/monitor"
@@ -50,5 +55,5 @@ require "gonzui/logger"
 require 'gonzui/searcher'
 require 'gonzui/searchquery'
 require 'gonzui/searchresult'
-require "gonzui/texttokenizer"
+
 

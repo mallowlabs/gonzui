@@ -1,7 +1,7 @@
 namespace :extconf do
   extension = File.basename(__FILE__, '.rake')
 
-  ext = "ext/gonzui/webapp/#{extension}"
+  ext = "ext/#{extension}"
   ext_so = "#{ext}/#{extension}.#{Config::CONFIG['DLEXT']}"
   ext_files = FileList[
     "#{ext}/*.c",
