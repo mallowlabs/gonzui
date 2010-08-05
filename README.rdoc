@@ -20,15 +20,15 @@ First, You need to import source codes into an index. For example,
 if you want to import the source codes of wget-1.9.1.tar.gz,
 run the following command.
 
- % ./gonzui-import wget-1.9.1.tar.gz
+ % gonzui-import wget-1.9.1.tar.gz
 
 or if your system has apt-get and it's configured correctly,
 
- % ./gonzui-import --apt wget
+ % gonzui-import --apt wget
 
 Then, you can run gonzui-server that works as a web-based search engine.
 
- % ./gonzui-server
+ % gonzui-server
 
 Finally, you can access the search engine with your browser.
 The URL is http://localhost:46984/.
@@ -42,7 +42,7 @@ For example, if you want to import source codes that can be obtained by the foll
 
 you can just run gonzui-import as follows.
 
- % ./gonzui-import --cvs :pserver:anonymous@cvs.ruby-lang.org:/src ruby
+ % gonzui-import --cvs :pserver:anonymous@cvs.ruby-lang.org:/src ruby
 
 In short, you can replace "cvs -d X co Y" with "gonzui-import --cvs X Y".
 
@@ -101,13 +101,13 @@ For further information on usage, try --help option of each command.
 == REQUIREMENTS:
 * Ruby 1.8.2+
 * bdb 4.2+ (Berkeley DB)
-  * $ sudo apt-get install ilbdb-dev
+ $ sudo apt-get install ilbdb-dev
 
 === Ruby Libraries
 * langscan 1.2+
-  * $ sudo gem install langscan
+ $ sudo gem install langscan
 * bdb for Ruby 0.5.2+
-  * $ sudo apt-get install libdb-ruby1.8
+ $ sudo apt-get install libdb-ruby1.8
 
 == Optional Software
 The following software is not required but useful.
@@ -124,14 +124,17 @@ The following software is not required but useful.
 * Version Control Systems
   * cvs (gonzui-import --cvs)
   * svn (gonzui-import --svn)
+  * git (gonzui-import --git)
 
 == INSTALL:
 
-* $ sudo gem install gonzui
+ $ sudo gem install gonzui
 
 == LICENSE:
 Copyright (C) 2004-2005 Satoru Takabayashi <satoru@namazu.org>
+
 All rights reserved.
+
 This is free software with ABSOLUTELY NO WARRANTY.
 
 You can redistribute it and/or modify it under the terms of
