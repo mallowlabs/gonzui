@@ -70,7 +70,6 @@ script/console
 script/destroy
 script/generate
 script/makemanifest.rb
-setup.rb
 tasks/extconf.rake
 tasks/extconf/autopack.rake
 tasks/extconf/delta.rake
@@ -83,7 +82,6 @@ test/foo/bar.c
 test/foo/bar.h
 test/foo/foo.c
 test/foo/foo.spec
-test/post-distclean.rb
 test/test_apt.rb
 test/test_autopack_extn.rb
 test/test_bdbdbm.rb
