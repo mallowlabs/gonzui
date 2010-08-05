@@ -1,0 +1,66 @@
+VERSION  = 0.1
+TARGET   = foo
+SOURCES  = foo.c bar.c
+HEADERS  = bar.h
+CFLAGS   = -O2
+OBJS     = ${SOURCES:.c=.o}
+
+all: $(TARGET)
+
+foo: $(OBJS)
+	$(CC) -o foo $(OBJS)
+.c.o:
+	$(CC) -c $<
+
+clean:
+	rm -f $(TARGET) $(OBJS)
+	rm -rf *.tar.gz *.tar.bz2 *.zip foo-$(VERSION)
+
+
+dist:  dist-tree dist-targz dist-tarbz2 dist-zip dist-srpm dist-postprocess
+
+dist-tree:
+	@rm -rf foo-$(VERSION)
+	@mkdir foo-$(VERSION)
+	@cp $(SOURCES) $(HEADERS) foo-$(VERSION)
+	@cp Makefile.foo foo-$(VERSION)/Makefile
+
+dist-targz: dist-tree
+	@rm -f foo-$(VERSION).tar.gz
+	@tar zcf foo-$(VERSION).tar.gz foo-$(VERSION)
+
+dist-tarbz2: dist-tree
+	@rm -f foo-$(VERSION).tar.bz2
+	@tar jcf foo-$(VERSION).tar.bz2 foo-$(VERSION)
+
+dist-zip: dist-tree
+	@rm -f foo-$(VERSION).zip
+	@zip -qr foo-$(VERSION).zip foo-$(VERSION)
+
+dist-srpm: dist-targz
+	@rm -f foo-$(VERSION)-1.src.rpm
+	@if which rpmbuild >/dev/null 2>&1; then \
+		mkdir -p SOURCES SRPMS; \
+		cp foo-$(VERSION).tar.gz SOURCES; \
+		rpmbuild --define '_topdir .' -bs foo.spec >/dev/null 2>&1; \
+		mv SRPMS/foo-$(VERSION)-1.src.rpm .; \
+		rm -rf SOURCES SRPMS; \
+	fi
+	
+dist-postprocess:
+	@rm -rf foo-$(VERSION)
+
+dist-poor: dist-tree \
+           dist-poor-targz dist-poor-tarbz2 dist-poor-zip dist-postprocess
+
+dist-poor-targz:
+	@rm -f foo-$(VERSION)p.tar.gz
+	@cd foo-$(VERSION) && tar zcf ../foo-$(VERSION)p.tar.gz .
+
+dist-poor-tarbz2:
+	@rm -f foo-$(VERSION)p.tar.bz2
+	@cd foo-$(VERSION) && tar jcf ../foo-$(VERSION)p.tar.bz2 .
+
+dist-poor-zip:
+	@rm -f foo-$(VERSION)p.zip
+	@cd foo-$(VERSION) && zip -qr ../foo-$(VERSION)p.zip .

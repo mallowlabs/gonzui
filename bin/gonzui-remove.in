@@ -1,0 +1,58 @@
+#! %RUBY%
+#
+# gonzui-remove - a tool to remove contents from a gonzui DB
+#
+# Copyright (C) 2004-2005 Satoru Takabayashi <satoru@namazu.org> 
+#     All rights reserved.
+#     This is free software with ABSOLUTELY NO WARRANTY.
+#
+# You can redistribute it and/or modify it under the terms of 
+# the GNU General Public License version 2.
+#
+
+# %LOADPATH%
+require 'getoptlong'
+require 'gonzui'
+require 'gonzui/cmdapp'
+
+include Gonzui
+include Gonzui::Util
+
+class GonzuiRemove < Gonzui::CommandLineApplication
+  def do_show_usage
+    puts "Usage: #{program_name} [OPTION] PACKAGE..."
+  end
+
+  def do_get_option_table
+    []
+  end
+
+  def do_process_options(options)
+    show_usage if ARGV.empty?
+    @package_names = ARGV
+  end
+
+  def do_start
+    parse_options()
+    ensure_db_directory_available
+    init_logger
+
+    show_progress = if @config.quiet then false else true end
+    remover = Remover.new(@config, :show_progress => show_progress)
+    begin
+      @package_names.each {|package_name|
+        begin
+          remover.remove_package(package_name)
+          @logger.log("removed %s", package_name)
+        rescue GonzuiError => e
+          wprintf("%s", e.message)
+        end
+      }
+      print remover.summary
+    ensure
+      remover.finish
+    end
+  end
+end
+
+GonzuiRemove.start

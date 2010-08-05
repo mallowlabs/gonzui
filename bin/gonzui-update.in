@@ -1,0 +1,53 @@
+#! %RUBY%
+#
+# gonzui-update - a tool to remove contents from a gonzui DB
+#
+# Copyright (C) 2004-2005 Satoru Takabayashi <satoru@namazu.org> 
+#     All rights reserved.
+#     This is free software with ABSOLUTELY NO WARRANTY.
+#
+# You can redistribute it and/or modify it under the terms of 
+# the GNU General Public License version 2.
+#
+
+# %LOADPATH%
+require 'getoptlong'
+require 'gonzui'
+require 'gonzui/cmdapp'
+
+include Gonzui
+include Gonzui::Util
+
+class GonzuiUpdate < Gonzui::CommandLineApplication
+  def do_show_usage
+    puts "Usage: #{program_name} [OPTION]"
+  end
+
+  def do_get_option_table
+    []
+  end
+
+  def do_process_options(options)
+  end
+
+  def do_start
+    parse_options()
+    ensure_db_directory_available
+    init_logger
+
+    show_progress = if @config.quiet then false else true end
+    updater = Updater.new(@config, :show_progress => show_progress)
+    begin
+      updater.update {|package_name|
+        @logger.log("updated %s", package_name)
+      }
+      print updater.summary
+    rescue GonzuiError => e
+      wprintf("%s", e.message)
+    ensure
+      updater.finish
+    end
+  end
+end
+
+GonzuiUpdate.start

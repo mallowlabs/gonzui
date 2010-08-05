@@ -1,0 +1,68 @@
+#! %RUBY%
+# -*- ruby -*-
+#
+# gonzui-search - a tool to search a gonzui DB
+#
+# Copyright (C) 2004-2005 Satoru Takabayashi <satoru@namazu.org> 
+#     All rights reserved.
+#     This is free software with ABSOLUTELY NO WARRANTY.
+#
+# You can redistribute it and/or modify it under the terms of 
+# the GNU General Public License version 2.
+#
+
+# %LOADPATH%
+require 'getoptlong'
+require 'gonzui'
+require 'gonzui/cmdapp'
+
+include Gonzui
+
+class GonzuiSearch < CommandLineApplication
+  def do_show_usage
+    puts "Usage: #{program_name} PATTERN"
+    puts "  -P, --package=PACKAGE          search for PACKAGE"
+    puts "  -p, --prefix                   perform prefix search"
+    puts "  -e, --regexp                   perform regular expression search"
+    puts "  -t, --type=TYPE                search for TYPE"
+    puts "                                 funcall, fundef, fundecl, others"
+    puts "  -n, --line-number              print line number with output lines"
+    puts "  -c, --count                    only print a count of matching words"
+    puts "  -C, --context=NUM              print NUM lines of output context"
+    puts "      --color                    use markers to highlight the matching string"
+    puts "  -h, --no-filename              suppress the prefixing filename on output"
+  end
+
+  def do_get_option_table
+    [
+      ['--color',               GetoptLong::NO_ARGUMENT],
+      ['--context',       '-C', GetoptLong::REQUIRED_ARGUMENT],
+      ['--count',         '-c', GetoptLong::NO_ARGUMENT],
+      ['--line-number',   '-n', GetoptLong::NO_ARGUMENT],
+      ['--no-filename',   '-h', GetoptLong::NO_ARGUMENT],
+      ['--package',       '-P', GetoptLong::REQUIRED_ARGUMENT],
+      ['--prefix',        '-p', GetoptLong::NO_ARGUMENT],
+      ['--regexp',        '-e', GetoptLong::NO_ARGUMENT],
+      ['--type',          '-t', GetoptLong::REQUIRED_ARGUMENT],
+    ]
+  end
+
+  def do_process_options(options)
+    @options = options
+    show_usage  if ARGV.length != 1
+    @pattern = ARGV.first
+  end
+
+  def do_start
+    parse_options
+    ensure_db_directory_available
+    searcher = CommandLineSearcher.new(@config, @options)
+    begin
+      searcher.search(@pattern)
+    ensure
+      searcher.finish
+    end
+  end
+end
+
+GonzuiSearch.start

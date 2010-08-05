@@ -1,0 +1,175 @@
+#! %RUBY%
+#
+# gonzui-import - a tool to import contents from a gonzui DB
+#
+# Copyright (C) 2004-2005 Satoru Takabayashi <satoru@namazu.org> 
+#     All rights reserved.
+#     This is free software with ABSOLUTELY NO WARRANTY.
+#
+# You can redistribute it and/or modify it under the terms of 
+# the GNU General Public License version 2.
+#
+
+# %LOADPATH%
+require 'getoptlong'
+require 'gonzui'
+require 'gonzui/cmdapp'
+
+include Gonzui
+
+class GonzuiImport < CommandLineApplication
+  def do_show_usage
+    puts "Usage: #{program_name} [OPTION] TARGET..."
+    puts "  TARGET: directories, archives, packages (by apt)"
+    puts
+    puts "  -a, --apt PACKAGE...           use apt-get to get a source package"
+    puts "      --cvs REPOSITORY MODULE    use cvs to get a source tree"
+    puts "      --git REPOSITORY MODULE    use git to get a source tree"
+    puts "      --svn REPOSITORY MODULE    use svn to get a source tree"
+    puts "      --exclude=PATTERN          exclude files matching PATTERN"
+    puts "                                 [#{@config.exclude_pattern.to_s}]"
+    puts "      --no-utf8                  don't convert files to UTF-8"
+    puts "      --no-ABBREV                don't index ABBREV files. (ex. --no-text)"
+    puts "                                 try --list-formats to see abbrev. list"
+    puts "      --list-archives            list all supported archives"
+  end
+
+  def do_get_option_table
+    table = [
+      ['--apt',           '-a', GetoptLong::NO_ARGUMENT],
+      ['--cvs',                 GetoptLong::NO_ARGUMENT],
+      ['--git',                 GetoptLong::NO_ARGUMENT],
+      ['--svn',                 GetoptLong::NO_ARGUMENT],
+      ['--no-utf8',             GetoptLong::NO_ARGUMENT],
+      ['--exclude',             GetoptLong::REQUIRED_ARGUMENT],
+      ['--list-archives',       GetoptLong::NO_ARGUMENT],
+    ]
+    LangScan.modules.each {|m|
+      option = "--no-" + m.abbrev
+      table.push([option, GetoptLong::NO_ARGUMENT])
+    }
+    return table
+  end
+
+  def validate_combinations(options)
+    keys = ["apt", "cvs", "git", "svn"]
+    used_keys = keys.find_all {|key| options[key] }
+    n = used_keys.length
+    if n >= 2
+      eprintf("%s cannot be combined",
+              used_keys.map {|key| "--" + key }.join(" "))
+    end
+  end
+
+  def show_list_archives
+    supported_archives = Extractor.extnames.sort
+    supported_archives.each {|extname|
+      printf("%s\n", extname)
+    }
+    exit
+  end
+
+  def do_process_options(options)
+    validate_combinations(options)
+    @use_apt = if options["apt"] then true else false end
+    @use_cvs = if options["cvs"] then true else false end
+    @use_git = if options["git"] then true else false end
+    @use_svn = if options["svn"] then true else false end
+
+    @config.utf8 = false if options["no-utf8"]
+    if options["exclude"]
+      @config.exclude_pattern = Regexp.new(options["exclude"]) 
+    end
+    options.each_key {|key|
+      if m = /^no-(.+)$/.match(key)
+        abbrev = m[1]
+        @config.noindex_formats.push(abbrev)
+      end
+    }
+    show_list_archives if options["list-archives"]
+    show_usage if ARGV.empty?
+    if @use_cvs
+      eprintf("--cvs REPOSITORY MODULE") if ARGV.length != 2
+      @target_names = [[ARGV.first, ARGV.last]]
+    elsif @use_git
+      eprintf("--git REPOSITORY MODULE") if ARGV.length != 2
+      @target_names = [[ARGV.first, ARGV.last]]
+    elsif @use_svn
+      eprintf("--svn REPOSITORY MODULE") if ARGV.length != 2
+      @target_names = [[ARGV.first, ARGV.last]]
+    else
+      @target_names = ARGV
+    end
+  end
+
+  def make_uri_for_vcs(target_name)
+    repository = target_name.first
+    mozule = target_name.last
+    if @use_cvs
+      return URI.for_cvs(repository, mozule)
+    elsif @use_svn
+      return URI.for_svn(repository, mozule)
+    else
+      assert_not_reached
+    end
+  end
+
+  def make_uri(target_name)
+    if @use_apt
+      return URI.for_apt(target_name)
+    elsif @use_cvs or @use_svn
+      return make_uri_for_vcs(target_name)
+    end
+
+    begin
+      uri = URI.parse(target_name)
+      return uri if uri.absolute?
+      return URI.from_path(target_name)
+    rescue URI::InvalidURIError => e
+      begin
+        # windows
+        return URI.from_path(target_name)
+      rescue => e
+	  	# ignore
+      end
+      raise GonzuiError.new("#{target_name}: malformed URI")
+    end
+  end
+
+  def import(importer, target_name)
+    begin
+      uri = make_uri(target_name)
+      importer.import(uri)
+      @logger.log("imported %s", importer.last_package_name)
+    rescue GonzuiError => e
+      wprintf("%s", e.message)
+    end
+  end
+
+  def lower_priority
+    begin
+      Process.setpriority(Process::PRIO_PROCESS, 0, 10)
+    rescue NoMethodError, Errno::EACCES, NameError => e
+    end
+  end
+
+  def do_start
+    parse_options()
+    init_logger
+    lower_priority
+
+    show_progress = if @config.quiet then false else true end
+    importer = Importer.new(@config, 
+                            :show_progress => show_progress)
+    begin
+      @target_names.each {|target_name|
+        import(importer, target_name)
+      }
+      print importer.summary
+      importer.finish
+    rescue Interrupt
+    end
+  end
+end
+
+GonzuiImport.start

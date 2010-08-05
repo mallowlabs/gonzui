@@ -1,0 +1,167 @@
+#! %RUBY%
+#
+# gonzui-db - a tool to inspect a gonzui DB
+#
+# Copyright (C) 2004-2005 Satoru Takabayashi <satoru@namazu.org> 
+#     All rights reserved.
+#     This is free software with ABSOLUTELY NO WARRANTY.
+#
+# You can redistribute it and/or modify it under the terms of 
+# the GNU General Public License version 2.
+#
+
+# %LOADPATH%
+require 'getoptlong'
+require 'gonzui'
+require 'gonzui/cmdapp'
+
+include Gonzui
+include Gonzui::Util
+
+class GonzuiDB < CommandLineApplication
+  def command_list_files(package_names)
+    seen = {}
+    DBM.open(@config, true) {|dbm|
+      dbm.each_package_name {|package_name|
+        if package_names.empty? or package_names.find {|p| p == package_name }
+          seen[package_name] = true
+          package_id = dbm.get_package_id(package_name)
+          path_ids = dbm.get_path_ids(package_id)
+          path_ids.each {|path_id|
+            path = dbm.get_path(path_id)
+            printf("%s\n", path)
+          }
+        end
+      }
+    }
+    package_names.each {|package_name|
+      wprintf("%s: package not found", package_name) unless seen[package_name]
+    }
+  end
+
+  def command_list_packages(patterns)
+    DBM.open(@config, true) {|dbm|
+      dbm.each_package_name {|package_name|
+        if patterns.empty? or patterns.find {|p| /#{p}/.match(package_name) }
+          printf("%s\n", package_name)
+        end
+      }
+    }
+  end
+
+  def command_list_words(unused)
+    DBM.open(@config, true) {|dbm|
+      dbm.each_word {|word|
+        printf("%s\n", word)
+      }
+    }
+  end
+
+  def each_matching_db(db_names)
+    raise ArgmentError.new("block not given") unless block_given?
+    seen = {}
+    DBM.open(@config, true) {|dbm|
+      dbm.each_db_name {|db_name|
+        if db_names.empty? or db_names.find {|x| x == db_name }
+          seen[db_name] = true
+          db = dbm.send(db_name)
+          yield(db)
+        end
+      }
+    }
+    db_names.each {|db_name|
+      wprintf("%s: db not found", db_name) unless seen[db_name]
+    }
+  end
+
+  def command_list_keys(db_names)
+    each_matching_db(db_names) {|db|
+      db.each {|key, value|
+        printf("%s\n", key.inspect)
+      }
+    }
+  end
+
+  def command_retrieve(paths)
+    path = paths.first
+    DBM.open(@config, true) {|dbm|
+      path_id = dbm.get_path_id(path)
+      if path_id
+        print dbm.get_content(path_id)
+      else 
+        eprintf("%s: not found", path)
+      end
+    }
+  end
+
+  def command_dump(db_names)
+    each_matching_db(db_names) {|db|
+      db.each {|key, value|
+        printf("%s\t%s\n", key.inspect, value.inspect)
+      }
+    }
+  end
+
+  def command_verify(unsed)
+    DBM.open(@config, true) {|dbm|
+      begin
+        dbm.consistent?
+      rescue AssertionFailed => e
+        eprintf("DB is broken. You need to rebuild it.\n\n%s\n%s\n",
+                e.to_s,
+                e.backtrace.join("\n")
+                )
+      end
+    }
+  end
+
+  def do_show_usage
+    puts "Usage: #{program_name} [OPTION]..."
+    puts "  -l, --list [PATTERN]...        list packages"
+    puts "  -L, --list-files [PACKAGE]...  list files owend by package(s)"
+    puts "  -w, --list-words               list words"
+    puts "  -k, --list-keys [DBNAME]...    list keys in database(s) (for test)"
+    puts "      --dump [DBNAME]...         dump contents of database(s) (for test)"
+    puts "  -r, --retrieve PATH            retrieve the file of PATH"
+    puts "      --verify                   verify DB integrity"
+  end
+
+  def do_get_option_table
+    [
+      ['--list',         '-l', GetoptLong::NO_ARGUMENT],
+      ['--list-files',   '-L', GetoptLong::NO_ARGUMENT],
+      ['--list-words',   '-w', GetoptLong::NO_ARGUMENT],
+      ['--list-keys',    '-k', GetoptLong::NO_ARGUMENT],
+      ['--dump',               GetoptLong::NO_ARGUMENT],
+      ['--retrieve',     '-r', GetoptLong::NO_ARGUMENT],
+      ['--verify',             GetoptLong::NO_ARGUMENT],
+    ]
+  end
+
+  def do_process_options(options)
+    tasks = []
+    tasks.push(:command_list_files)    if options['list-files']
+    tasks.push(:command_list_packages) if options['list']
+    tasks.push(:command_list_words)  if options['list-words']
+    tasks.push(:command_list_keys)     if options['list-keys']
+    tasks.push(:command_retrieve)      if options['retrieve']
+    tasks.push(:command_dump)          if options['dump']
+    tasks.push(:command_verify)        if options['verify']
+    raise "cannot combine tasks" if tasks.length > 1
+    task = tasks.first
+
+    if task == nil or (task == :retrieve and ARGV.length != 1)
+      show_usage 
+    end
+    @task = task
+    @parameters = ARGV
+  end
+
+  def do_start
+    parse_options()
+    ensure_db_directory_available
+    send(@task, @parameters)
+  end
+end
+
+GonzuiDB.start

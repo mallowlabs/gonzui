@@ -1,0 +1,87 @@
+Overview of Changes in gonzui 1.2 - 2005-07-04
+
+* Objective Caml's source code is now supported
+* Brainfuck's source code is now supported
+* RPM spec file is now supported
+* Some small bugs have been fixed
+
+Overview of Changes in gonzui 1.1 - 2005-04-11
+
+* Shell's source code is now supported (beta)
+* JavaScript has been modified for supporting Safari
+* Some small bugs have been fixed
+* Some tests have been added
+
+Overview of Changes in gonzui 1.0 - 2005-03-29
+
+* LangScan::CSS module has been reimplemented
+* Some other small enhancements has been made
+* Some small bugs have been fixed
+* Some tests have been added
+
+Overview of Changes in gonzui 0.9 - 2005-03-22
+
+* Perl's source code is now supported (beta)
+* JavaScript's source code is now supported (beta)
+* CSS's source code is now supported (beta)
+* Title for gonzui-server can now be specified with --title option
+* Root mount point for WEBrick can now be configurable in gonzuirc
+* Some other small enhancements has been made
+* Some small bugs have been fixed
+
+Overview of Changes in gonzui 0.8 - 2005-03-17
+
+* Import from a CVS repository is now supported
+* Import from a Subversion repository is now supported
+* SRPM extraction has improved
+* Some small bugs have been fixed
+
+Overview of Changes in gonzui 0.7 - 2005-03-04
+
+* gonzui-update is now introduced for incremental update
+* DB Performance of importing has improved (about 5 % faster)
+* Some crucial bugs have been fixed
+* Lots of other enhancements has been made
+
+Overview of Changes in gonzui 0.6 - 2005-02-23
+
+* Performance of a large DB improved (at most twice or more faster)
+* DB size has shrunk (about 30% smaller)
+* Lots of other enhancements has been made
+
+Overview of Changes in gonzui 0.5 - 2005-02-15
+
+* DB Performance of importing has improved (at most 80% faster)
+* DB size has shrunk (about 10% smaller)
+* Performance of LangScan::C has improved (about three or four times faster)
+* Licenses can be specified as a key for searches now
+* Lots of other enhancements has been made
+
+Overview of Changes in gonzui 0.4 - 2005-02-06
+
+* DB Performance of importing has improved (twice or more fast)
+* DB size has shrunk (1/2 or smaller)
+* Python's source code is now supported
+* PHP's source code is now supported
+* Lots of other enhancements has been made
+
+Overview of Changes in gonzui 0.3 - 2005-01-29
+
+* Multiple keywords in a query is now supported
+* Phrases can be searched now
+* Multibyte characters can be searched now
+* Comments and strings in source codes can be searched now
+* Text files can be searched now
+* Languages can be specified as a key for searches now
+* The database (gonzui.db) format has become incompatible again
+* Lots of other enhancements has been made
+
+Overview of Changes in gonzui 0.2 - 2004-12-29
+
+* Ruby's source code is now supported
+* The database (gonzui.db) format has become incompatible
+* Lots of other enhancements has been made
+
+Overview of Changes in gonzui 0.1 - 2004-11-29
+
+* The initial release

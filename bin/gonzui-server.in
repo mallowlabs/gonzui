@@ -1,0 +1,176 @@
+#! %RUBY%
+#
+# gonzui-server - a web-based search engine of gonzui
+#
+# Copyright (C) 2004-2005 Satoru Takabayashi <satoru@namazu.org> 
+#     All rights reserved.
+#     This is free software with ABSOLUTELY NO WARRANTY.
+#
+# You can redistribute it and/or modify it under the terms of 
+# the GNU General Public License version 2.
+#
+
+# %LOADPATH%
+require 'webrick'
+require 'gonzui'
+require 'gonzui/cmdapp'
+require 'gonzui/webapp'
+require 'ftools'
+require 'fileutils'
+
+include WEBrick
+include Gonzui
+include FileUtils
+
+class NullWriter
+  def << (message)
+  end
+end
+
+class GonzuiServer < CommandLineApplication
+  include GetText
+
+  def be_secure
+    return unless Process.uid == 0
+    uid = Etc::getpwnam(@config.user).uid 
+    gid = Etc::getgrnam(@config.group).gid
+    touch(@config.pid_file)
+    touch(@config.gonzui_log_file)
+    touch(@config.access_log_file)
+    File.chown(uid, gid, @config.pid_file)
+    File.chown(uid, gid, @config.gonzui_log_file)
+    File.chown(uid, gid, @config.access_log_file)
+    Process.uid  = uid
+    Process.gid  = gid
+    Process.euid = uid
+  end
+
+  def make_webrick_options
+    log_proc = lambda {@logger.log("server started [%d]", Process.pid) }
+    webrick_options = {}
+    if @config.bind_address != '*'
+      webrick_options[:BindAddress] = @config.bind_address
+    end
+    webrick_options[:Port] = @config.http_port
+    if @config.daemon
+      eprintf("daemon mode is not supported in Windows platform") if windows?
+      webrick_options[:StartCallback] = lambda {
+        log_proc.call
+        start_daemon
+      }
+      webrick_options[:Logger] = Log.new(NullWriter.new) # be quiet
+    else
+      webrick_options[:StartCallback] = log_proc
+      webrick_options[:Logger] = Log.new(STDOUT, Log::ERROR)
+    end
+    access_logger = File.open(@config.access_log_file, "a")
+    access_logger.sync = true
+    webrick_options[:AccessLog] = 
+      [[ access_logger, AccessLog::COMBINED_LOG_FORMAT ]]
+    return webrick_options
+  end
+
+  def read_pid_file
+    File.read(@config.pid_file).chomp.to_i
+  end
+
+  def write_pid_file
+    begin
+      File.open(@config.pid_file, "w") {|f| f.puts Process.pid }
+    rescue
+      # FIXME: we need logging here.
+    end
+  end
+
+  def remove_pid_file
+    File.safe_unlink(@config.pid_file)
+  end
+
+  def start_daemon
+    Daemon.start
+    write_pid_file
+    be_secure
+  end
+
+  def stop_daemon
+    begin
+      pid = read_pid_file
+      Process.kill("TERM", pid) 
+    rescue
+      wprintf("no processe to kill" )
+    end
+    remove_pid_file
+    exit
+  end
+
+  def do_show_usage
+    puts "Usage: #{program_name} [OPTION]"
+    puts "  -p, --port=PORT                listen on the specified PORT [#{@config.http_port}]"
+    puts "      --bind=ADDRESS             listen on the specified ADDRESS [#{@config.bind_address}]"
+    puts "      --daemon                   run as a daemon"
+    puts "  -u, --user=USER                use USER's UID when daemonized [#{@config.user}]"
+    puts "  -g, --group=GROUP              use GROUP's GID when daemonized [#{@config.group}]"
+    puts "  -t, --title=TITLE              use TITLE for HTML contents [#{@config.site_title}]"
+  end
+
+  def do_get_option_table
+    [
+      ['--port',           '-p', GetoptLong::REQUIRED_ARGUMENT],
+      ['--bind',                 GetoptLong::REQUIRED_ARGUMENT],
+      ['--user',           '-u', GetoptLong::REQUIRED_ARGUMENT],
+      ['--group',          '-g', GetoptLong::REQUIRED_ARGUMENT],
+      ['--title',          '-t', GetoptLong::REQUIRED_ARGUMENT],
+      ['--daemon',               GetoptLong::NO_ARGUMENT],
+      ['--stop',                 GetoptLong::NO_ARGUMENT],
+    ]
+  end
+
+  def do_process_options(options)
+    @config.http_port = options["port"].to_i if options["port"]
+    @config.bind_address = options["bind"] if options["bind"]
+    @config.user = options["user"] if options["user"]
+    @config.group = options["group"] if options["group"]
+    @config.site_title = options["title"] if options["title"]
+    @config.daemon = true if options["daemon"]
+    stop_daemon if options["stop"]
+  end
+
+  def start_server(dbm, catalog_repository)
+    server = HTTPServer.new(make_webrick_options)
+    trap("INT"){ server.shutdown }
+    GonzuiServlet.servlets.each {|klass|
+      absolute_mount_point = URI.path_join(@config.base_mount_point, 
+                                           klass.mount_point)
+      server.mount(absolute_mount_point, klass,
+                   @config, @logger, dbm, catalog_repository)
+    }
+    server.start
+  end
+
+  def do_start
+    parse_options()
+    ensure_db_directory_available
+    init_logger
+    @logger.monitor = STDOUT unless @config.daemon
+
+    catalog_repository = CatalogRepository.new(@config.catalog_directory)
+    if @config.bind_address != '*'
+      printf("http://%s:%d/\n", @config.bind_address, @config.http_port)
+    else
+      printf("http://%s:%d/\n", Socket.gethostname, @config.http_port)
+    end
+    
+    dbm = Gonzui::DBM.open(@config, true)
+    begin
+      start_server(dbm, catalog_repository)
+    rescue => e
+      eprintf("%s", e.message)
+    ensure
+      @logger.log("server stopped [%d]", Process.pid)
+      dbm.close
+      remove_pid_file
+    end
+  end
+end
+
+GonzuiServer.start
