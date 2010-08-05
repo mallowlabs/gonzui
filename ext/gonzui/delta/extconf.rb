@@ -1,3 +1,5 @@
 require 'mkmf'
 
-create_makefile('delta')
+dir_config("delta")
+
+create_makefile("gonzui/delta")

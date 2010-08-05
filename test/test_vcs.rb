@@ -1,14 +1,16 @@
 #! /usr/bin/env ruby
-require '_load_path.rb'
-require '_external_tools.rb'
-require 'test/unit'
-require 'gonzui'
+require File.dirname(__FILE__) + '/test_helper.rb'
+require '_external_tools'
 require 'ftools'
 require '_test-util'
 
 class VCSTest < Test::Unit::TestCase
   include TestUtil
   include Gonzui::Util
+
+  def teardown
+    remove_db(Gonzui::Config.new)
+  end
 
   def prepare
     make_dist_tree

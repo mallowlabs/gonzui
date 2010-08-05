@@ -1,0 +1,142 @@
+= gonzui
+
+* http://gonzui.sourceforge.net/index.html.en
+* Gem version
+ * http://github.com/mallowlabs/gonzui
+
+== DESCRIPTION:
+
+gonzui is a source code search engine for accelerating open source software development. In the open source software development, programmers frequently refer to source codes written by others. Our goal is to help programmers develop programs effectively by creating a source code search engine that covers vast quantities of open source codes available on the Internet.
+
+== FEATURES/PROBLEMS:
+
+* Windows is not supported now.
+
+== SYNOPSIS:
+
+=== Basic Usage
+
+First, You need to import source codes into an index. For example,
+if you want to import the source codes of wget-1.9.1.tar.gz,
+run the following command.
+
+ % ./gonzui-import wget-1.9.1.tar.gz
+
+or if your system has apt-get and it's configured correctly,
+
+ % ./gonzui-import --apt wget
+
+Then, you can run gonzui-server that works as a web-based search engine.
+
+ % ./gonzui-server
+
+Finally, you can access the search engine with your browser.
+The URL is http://localhost:46984/.
+
+=== Import through version control systems
+
+Currently, gonzui supports import from CVS and Subversion, Git's repositories.
+For example, if you want to import source codes that can be obtained by the following command,
+
+ % cvs -d :pserver:anonymous@cvs.ruby-lang.org:/src co ruby
+
+you can just run gonzui-import as follows.
+
+ % ./gonzui-import --cvs :pserver:anonymous@cvs.ruby-lang.org:/src ruby
+
+In short, you can replace "cvs -d X co Y" with "gonzui-import --cvs X Y".
+
+For Subversion, if you want to import source codes that can be obtained by the following command,
+
+ % svn co http://svn.edgewall.com/repos/trac/trunk trac
+
+you can just run gonzui-import as follows.
+
+ % gonzui-import --svn http://svn.edgewall.com/repos/trac/trunk trac
+
+In short, you can replace "svn co X Y" with "gonzui-import --svn X Y".
+
+You can update the gonzui's index by gonzui-update command to reflect changes as described bellow.
+
+Currently, gonzui doesn't support revisions and tags of CVS and Subversion.
+
+=== Incremental Update
+
+gonzui-update is a tool for doing incremental update of the existing indices.
+For example, if you build an index by importing /somewhere/foo by the following command:
+
+ % gonzui-import /somewhere/foo
+
+and then, you want to update the existing index for reflecting
+recent changes (addition, deletion, and update of files) in /somewhere/foo,
+you can just run gonzui-update like:
+
+ % gonzui-update
+
+Since the index includes the location of /somewhere/foo,
+you don't have to give any parameters to gonzui-update command.
+If the existing index contains two or more packages,
+all packages are supposed to be updated.
+If /somewhere/foo is disappeared,
+gonzui-update prints an warning like "source disappeared".
+
+=== Other Usage
+
+Command-line-based search tool is also available mainly for debug purposes.
+To find locations of ``main'' function, run gonzui-search as follows.
+
+ % gonzui-search main
+
+You can inspect gonzui's index using gonzui-db command.
+To obtain the list of packages in the index, run gonzui-db as follows.
+
+ % gonzui-db --list
+
+To remove wget-1.9.1, run gonzui-remove as follows.
+
+ % gonzui-remove wget-1.9.1
+
+For further information on usage, try --help option of each command.
+
+== REQUIREMENTS:
+* Ruby 1.8.2+
+* bdb 4.2+ (Berkeley DB)
+ * $ sudo apt-get install ilbdb-dev
+
+=== Ruby Libraries
+* langscan 1.2+
+ * $ sudo gem install langscan
+* bdb for Ruby 0.5.2+
+ * $ sudo apt-get install libdb-ruby1.8
+
+== Optional Software
+The following software is not required but useful.
+* Archive Handling
+ * tar (.tar.*)
+ * gunzip (.tar.gz)
+ * bunzip2 (.tar.bz2)
+ * uncompress (.tar.Z)
+ * unzip (.zip)
+ * lha (.lzh)
+ * rpm, rpmbuild (.src.rpm)
+* Source Code Fetcher
+ * apt-get (gonzui-import --apt)
+* Version Control Systems
+ * cvs (gonzui-import --cvs)
+ * svn (gonzui-import --svn)
+
+== INSTALL:
+
+* $ sudo gem install gonzui
+
+== LICENSE:
+Copyright (C) 2004-2005 Satoru Takabayashi <satoru@namazu.org>
+    All rights reserved.
+    This is free software with ABSOLUTELY NO WARRANTY.
+
+You can redistribute it and/or modify it under the terms of
+the GNU General Public License version 2.
+
+== AUTHORS:
+see 'AUTHORS.txt'
+

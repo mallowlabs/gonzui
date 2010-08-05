@@ -1,4 +1,4 @@
-#! %RUBY%
+#!/usr/bin/env ruby
 # -*- ruby -*-
 #
 # gonzui-search - a tool to search a gonzui DB

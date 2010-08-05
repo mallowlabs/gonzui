@@ -1,7 +1,5 @@
 #! /usr/bin/env ruby
-require '_load_path.rb'
-require 'test/unit'
-require 'gonzui'
+require File.dirname(__FILE__) + '/test_helper.rb'
 require '_test-util'
 
 class TextTokenizerTest < Test::Unit::TestCase

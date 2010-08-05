@@ -1,3 +1,5 @@
 require 'mkmf'
 
-create_makefile('xmlformatter')
+dir_config("xmlformatter")
+
+create_makefile("gonzui/webapp/xmlformatter")

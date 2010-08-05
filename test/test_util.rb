@@ -1,9 +1,7 @@
 #! /usr/bin/env ruby
-require '_load_path.rb'
-require 'test/unit'
+require File.dirname(__FILE__) + '/test_helper.rb'
 require 'ftools'
 require 'fileutils'
-require 'gonzui'
 require '_test-util'
 
 class UtilTest < Test::Unit::TestCase

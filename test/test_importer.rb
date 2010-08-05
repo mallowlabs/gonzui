@@ -1,9 +1,6 @@
 #! /usr/bin/env ruby
-require '_load_path.rb'
+require File.dirname(__FILE__) + '/test_helper.rb'
 require '_external_tools.rb'
-require 'test/unit'
-require 'fileutils'
-require 'gonzui'
 require '_test-util'
 
 class ImporterTest < Test::Unit::TestCase

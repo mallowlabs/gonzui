@@ -1,10 +1,7 @@
 #! /usr/bin/env ruby
-require '_load_path.rb'
+require File.dirname(__FILE__) + '/test_helper.rb'
 require '_test-util'
-require 'test/unit'
-require 'gonzui/logger'
 require 'time'
-require 'stringio'
 
 class LoggerTest < Test::Unit::TestCase
   def create_test_case

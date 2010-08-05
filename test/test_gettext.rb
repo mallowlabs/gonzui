@@ -1,8 +1,6 @@
-#! /usr/bin/env ruby
+#! /usr/bin/env ruby -Ku
 # -*- coding: utf-8-unix -*-
-require '_load_path.rb'
-require 'test/unit'
-require 'gonzui/gettext'
+require File.dirname(__FILE__) + '/test_helper.rb'
 require '_test-util'
 
 class GetTextTest < Test::Unit::TestCase

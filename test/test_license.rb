@@ -1,8 +1,6 @@
 #! /usr/bin/env ruby
-require '_load_path.rb'
-require 'test/unit'
+require File.dirname(__FILE__) + '/test_helper.rb'
 require '_test-util'
-require 'gonzui'
 
 class LicenseTest < Test::Unit::TestCase
   TestCases = [

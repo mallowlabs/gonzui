@@ -1,6 +1,5 @@
 #! /usr/bin/env ruby
-require '_load_path.rb'
-require 'test/unit'
+require File.dirname(__FILE__) + '/test_helper.rb'
 require 'gonzui/webapp/xmlformatter'
 require '_test-util'
 

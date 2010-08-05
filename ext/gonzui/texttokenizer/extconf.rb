@@ -1,3 +1,5 @@
 require 'mkmf'
 
-create_makefile('texttokenizer')
+dir_config("texttokenizer")
+
+create_makefile("gonzui/texttokenizer")

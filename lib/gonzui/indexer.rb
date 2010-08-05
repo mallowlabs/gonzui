@@ -132,7 +132,11 @@ module Gonzui
       if parts.length < 2
         raise IndexerError.new("normalized path should not be flat")
       end
-      return parts.first
+      package_name = parts.first
+      if package_name.size == 0 || package_name == "." || package_name == ".."
+        package_name = File.basename(@source_uri.path)
+      end
+      return package_name
     end
 
     def add_text(fragment, type_id)

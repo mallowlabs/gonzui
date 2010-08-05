@@ -1,19 +1,22 @@
 #! /usr/bin/env ruby
-require '_load_path.rb'
-require '_external_tools.rb'
-require 'test/unit'
-require 'gonzui'
+require File.dirname(__FILE__) + '/test_helper.rb'
+require '_external_tools'
 require '_test-util'
 
 class FetcherTest < Test::Unit::TestCase
   include Gonzui::Util
   include TestUtil
 
+  def teardown
+    remove_db(Gonzui::Config.new)
+  end
+
   def validate_foo_files(fetcher, paths)
     paths.each {|path|
       FOO_FILES.include?(File.basename(path))
       content = fetcher.fetch(path)
-      tmp = File.read(File.join("foo", FOO_PACKAGE, path))
+      tmp = File.read(File.join(File.dirname(__FILE__),
+                      "foo", FOO_PACKAGE, path))
       assert_equal(tmp, content.text)
     }
   end
@@ -21,7 +24,9 @@ class FetcherTest < Test::Unit::TestCase
   def test_file
     config = Gonzui::Config.new
     make_dist_tree
-    uri = URI.parse(sprintf("file://%s/foo/%s", Dir.pwd, FOO_PACKAGE))
+    uri = URI.parse(sprintf("file://%s/foo/%s",
+        File.expand_path(File.dirname(__FILE__)), # Dir.pwd
+        FOO_PACKAGE))
     fetcher = Gonzui::Fetcher.new(config, uri)
     paths = fetcher.collect
     assert_equal(false, paths.empty?)

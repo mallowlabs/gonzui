@@ -33,13 +33,4 @@ if ( File.directory?( path ) )
 	Dir.rmdir( path )
 end
 
-lst = %w|
-_external_tools.rb|
-lst.each do |e|
-	path = File.join( root, e )
-	if ( File.file?( path ) )
-		File.delete( path )
-	end
-end
-
 

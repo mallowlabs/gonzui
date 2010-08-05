@@ -1,3 +1,3 @@
 require 'mkmf'
 
-create_makefile('autopack')
+create_makefile('gonzui/autopack')

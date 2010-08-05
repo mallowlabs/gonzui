@@ -12,13 +12,17 @@ module TestUtil
   FOO_C_FILES = FOO_FILES.find_all {|x| /\.[ch]$/.match(x) }
   FOO_SYMBOLS = ["bar", "foo", "main", "printf"]
   FOO_PACKAGE = "foo-0.1"
-  FOO_TGZ     = File.join("foo", FOO_PACKAGE + ".tar.gz")
+  FOO_TGZ     = File.join(File.dirname(__FILE__), "foo",
+                          FOO_PACKAGE + ".tar.gz")
 
   @@make_options = if gnu_make?
                      "--quiet --no-print-directory"
                    else
                      ""
                    end
+  @@foo = File.join(File.dirname(__FILE__), "foo")
+
+############### Import ###############
 
   def add_package(config)
     importer = Gonzui::Importer.new(config)
@@ -26,6 +30,8 @@ module TestUtil
     importer.import(url)
     importer.finish
   end
+
+############### DB ###############
 
   def make_db(config)
     remove_db(config)
@@ -40,12 +46,14 @@ module TestUtil
     rm_rf(config.db_directory)
   end
 
+############### Make ###############
+
   def make_dist_tree
-    system("cd foo && make #{@@make_options} -f Makefile.foo dist-tree")
+    system("cd #{@@foo} && make #{@@make_options} -f Makefile.foo dist-tree")
   end
 
   def make_clean
-    system("cd foo && make #{@@make_options} -f Makefile.foo clean")
+    system("cd #{@@foo} && make #{@@make_options} -f Makefile.foo clean")
   end
 
   def make_archives
@@ -53,12 +61,14 @@ module TestUtil
     Gonzui::Util.require_command("tar")
     Gonzui::Util.require_command("gzip")
     Gonzui::Util.require_command("bzip2")
-    system("cd foo && make #{@@make_options} -f Makefile.foo dist")
-    system("cd foo && make #{@@make_options} -f Makefile.foo dist-poor")
+    system("cd #{@@foo} && make #{@@make_options} -f Makefile.foo dist")
+    system("cd #{@@foo} && make #{@@make_options} -f Makefile.foo dist-poor")
   end
 
+############### CVS ###############
+
   def cvsroot
-    File.expand_path("tmp.cvsroot")
+    File.expand_path(File.join(File.dirname(__FILE__), "tmp.cvsroot"))
   end
 
   def make_cvs
@@ -68,7 +78,7 @@ module TestUtil
     Dir.mkdir(cvsroot)
     command_line = sprintf("cvs -d %s init", shell_escape(cvsroot))
     system(command_line)
-    command_line = sprintf("cd %s && ", shell_escape("foo/#{FOO_PACKAGE}"))
+    command_line = sprintf("cd %s && ", shell_escape("#{@@foo}/#{FOO_PACKAGE}"))
     command_line << sprintf("cvs -d %s import -m '' foo gonzui-test test", shell_escape(cvsroot))
     system(command_line)
   end
@@ -77,8 +87,10 @@ module TestUtil
     FileUtils.rm_rf(cvsroot)
   end
 
+############### SVN ###############
+
   def svnroot
-    File.expand_path("tmp.svnroot")
+    File.expand_path(File.join(File.dirname(__FILE__), "tmp.svnroot"))
   end
 
   def make_svn
@@ -90,7 +102,7 @@ module TestUtil
     Dir.mkdir(svnroot)
     command_line = sprintf("svnadmin create %s", shell_escape(svnroot))
     system(command_line)
-    command_line = sprintf("cd %s && ", shell_escape("foo/#{FOO_PACKAGE}"))
+    command_line = sprintf("cd %s && ", shell_escape("#{@@foo}/#{FOO_PACKAGE}"))
     command_line << sprintf("svn -q import -m '' %s", shell_escape(svnroot_uri))
     system(command_line)
     return svnroot_uri
@@ -100,8 +112,10 @@ module TestUtil
     FileUtils.rm_rf(svnroot)
   end
 
+############### GIT ###############
+
   def gitroot
-    File.expand_path("tmp.gitroot")
+    File.expand_path(File.join(File.dirname(__FILE__), "tmp.gitroot"))
   end
 
   def make_git
@@ -111,7 +125,7 @@ module TestUtil
     Dir.mkdir(gitroot)
     command_line = sprintf("git --git-dir %s init", shell_escape(gitroot))
     system(command_line)
-    command_line = sprintf("cd %s && ", shell_escape("foo/#{FOO_PACKAGE}"))
+    command_line = sprintf("cd %s && ", shell_escape("#{@@foo}/#{FOO_PACKAGE}"))
     command_line << sprintf("git --git-dir %s --work-tree . add . && ", shell_escape(gitroot))
     command_line << sprintf("git --git-dir %s --work-tree . commit -m 'import'", shell_escape(gitroot))
     system(command_line)

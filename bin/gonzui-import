@@ -1,4 +1,4 @@
-#! %RUBY%
+#!/usr/bin/env ruby
 #
 # gonzui-import - a tool to import contents from a gonzui DB
 #

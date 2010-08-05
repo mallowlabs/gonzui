@@ -1,9 +1,6 @@
 #! /usr/bin/env ruby
-require '_load_path.rb'
-require 'test/unit'
-require 'gonzui'
+require File.dirname(__FILE__) + '/test_helper.rb'
 require '_test-util'
-require 'pp'
 
 class ConfigTest < Test::Unit::TestCase
   def test_config

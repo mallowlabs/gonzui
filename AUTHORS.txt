@@ -1,0 +1,9 @@
+=Authors
+==Primary author:
+* Satoru Takabayashi <satoru at namazu.org>
+
+==XMLFormatter and TextSplitter in C:
+* Keisuke Nishida <knishida at open-cobol.org>
+
+==Gem Version:
+* mallowlabs <mallowlabs at gmail.com>

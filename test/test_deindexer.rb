@@ -1,21 +1,21 @@
 #! /usr/bin/env ruby
-require '_load_path.rb'
+require File.dirname(__FILE__) + '/test_helper.rb'
 require '_external_tools.rb'
-require 'test/unit'
-require 'gonzui'
 require '_test-util'
 
 class DeindexerTest < Test::Unit::TestCase
   include TestUtil
 
   def setup
-	@dbm = nil
+	  @dbm = nil
+    @config   = Gonzui::Config.new
   end
   def teardown
     unless @dbm.nil?
       @dbm.close rescue nil
     end
     @dbm = nil
+    remove_db(@config)
   end
 
   def _test_removed_clearly?(dbm)
@@ -29,17 +29,16 @@ class DeindexerTest < Test::Unit::TestCase
   end
 
   def test_deindex
-    config   = Gonzui::Config.new
-    remove_db(config)
-    make_db(config)
-    dbm = Gonzui::DBM.open(config)
+    remove_db(@config)
+    make_db(@config)
+    dbm = Gonzui::DBM.open(@config)
     @dbm = dbm
 
     package_id = dbm.get_package_id(FOO_PACKAGE)
     assert_equal(0, package_id)
     dbm.get_path_ids(package_id).each {|path_id|
       normalized_path = dbm.get_path(path_id)
-      deindexer = Gonzui::Deindexer.new(config, dbm, normalized_path)
+      deindexer = Gonzui::Deindexer.new(@config, dbm, normalized_path)
       deindexer.deindex
     }
     assert(!dbm.has_package?(FOO_PACKAGE))

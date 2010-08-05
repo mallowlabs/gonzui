@@ -1,8 +1,6 @@
 #! /usr/bin/env ruby
-require '_load_path.rb'
+require File.dirname(__FILE__) + '/test_helper.rb'
 require '_external_tools.rb'
-require 'test/unit'
-require 'gonzui'
 require '_test-util'
 
 class DBMTest < Test::Unit::TestCase
@@ -63,7 +61,7 @@ class DBMTest < Test::Unit::TestCase
       assert(FOO_FILES.include?(File.basename(path)))
       assert_equal(path_id, dbm.get_path_id(path))
       content = dbm.get_content(path_id)
-      content = File.read(File.join("foo", path))
+      content = File.read(File.join(File.dirname(__FILE__), "foo", path))
       assert_equal(content, content)
       dbm.get_word_ids(path_id).each {|word_id|
         FOO_SYMBOLS.include?(dbm.get_word(word_id))

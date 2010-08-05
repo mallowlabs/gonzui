@@ -9,13 +9,17 @@
 # You can redistribute it and/or modify it under the terms of 
 # the GNU General Public License version 2.
 #
+#require 'rubygems'
+
+$LOAD_PATH << "lib"
+$LOAD_PATH << "ext"
 
 module Gonzui
-  VERSION    = "%VERSION%"
-  SYSCONFDIR = "%SYSCONFDIR%"
-  PKGDATADIR = "%PKGDATADIR%"
-  GONZUI_URI = "%GONZUI_URI%"
-  HTTP_PORT  = %HTTP_PORT%
+  VERSION    = "1.2"
+  SYSCONFDIR = "."
+  PKGDATADIR = File.join(__FILE__, "..", "..", "data", "gonzui")
+  GONZUI_URI = "http://gonzui.sourceforge.net"
+  HTTP_PORT  = 46984
   class GonzuiError < StandardError; end
 end
 

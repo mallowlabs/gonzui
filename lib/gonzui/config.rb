@@ -19,7 +19,7 @@ module Gonzui
       # because the current directory would be changed when
       # a process becomes a daemon.
       #
-      @temporary_directory = ENV['tmp']
+      @temporary_directory = ENV['tmp'] || "/tmp"
       @db_directory = File.expand_path("gonzui.db")
       @cache_directory = File.join(@db_directory, "cache")
       @gonzui_log_file = File.expand_path("gonzui.log")

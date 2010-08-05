@@ -1,8 +1,6 @@
 #! /usr/bin/env ruby
-require '_load_path.rb'
-require '_external_tools.rb'
-require 'test/unit'
-require 'gonzui'
+require File.dirname(__FILE__) + '/test_helper.rb'
+require '_external_tools'
 require '_test-util'
 
 class AptTest < Test::Unit::TestCase

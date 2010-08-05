@@ -1,0 +1,13 @@
+dn = "/dev/null"
+dn = "nul" if (/mswin|mingw|bccwin/ =~ RUBY_PLATFORM)
+APT_   = ( system( "apt-get --version 2> #{dn} > #{dn}" ) ? true : false )
+CVS_   = ( system( "cvs --version 2> #{dn} > #{dn}" ) ? true : false )
+GIT_   = ( system( "git --version 2> #{dn} > #{dn}" ) ? true : false )
+GREP_  = ( system( "grep --version 2> #{dn} > #{dn}" ) ? true : false )
+SVN_   = ( system( "svn --version 2> #{dn} > #{dn}" ) ? true : false )
+ZIP_   = ( system( "zip --version 2> #{dn} > #{dn}" ) ? true : false )
+UNZIP_ = ( system( "unzip -v 2> #{dn} > #{dn}" ) ? true : false )
+GZIP_  = ( system( "gzip --version 2> #{dn} > #{dn}" ) ? true : false )
+BZIP2_ = ( system( "bzip2 --help 2> #{dn} > #{dn}" ) ? true : false )
+TAR_   = ( system( "tar --version 2> #{dn} > #{dn}" ) ? true : false )
+ARC_ = ( ZIP_ && UNZIP_ && GZIP_ && BZIP2_ && TAR_ )
