@@ -300,7 +300,7 @@ module Gonzui
       # file:///home/... because git doesn't allow
       # the former URI.
       root.gsub!(%r!^file:/+!, "file:///") if uri.scheme == "file"
-      return Git.new(@config, root)
+      return Git.new(@config, root, mozule)
     end
 
     Fetcher.register(self)

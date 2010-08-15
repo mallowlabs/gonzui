@@ -49,9 +49,9 @@ class VCSTest < Test::Unit::TestCase
   def test_git
     config = prepare
     gitroot = make_git
-    git = Gonzui::Git.new(config, gitroot)
+    git = Gonzui::Git.new(config, gitroot, "foo")
     git.extract
-    cached_foo = File.join(config.cache_directory, "foo")
+    cached_foo = File.join(config.cache_directory, File.basename(gitroot))
     entries = Dir.entries_without_dots(cached_foo)
     FOO_FILES.each {|base_name|
       assert(entries.include?(base_name))

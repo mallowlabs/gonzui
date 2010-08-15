@@ -105,9 +105,9 @@ module Gonzui
   end
 
   class Git < AbstractVCS
-    def initialize(config, root)
+    def initialize(config, root, mozule = nil)
       require_command("git")
-      mozule = File.basename(URI.parse(root).path, ".git")
+      mozule = File.basename(URI.parse(root).path, ".git") unless mozule
       super(config, root, mozule)
     end
 
@@ -121,7 +121,7 @@ module Gonzui
 
     def do_update(output_directory)
       Dir.chdir(output_directory) {
-        run_command("git fetch","git fetch")
+        run_command("git pull","git pull")
       }
     end
   end
