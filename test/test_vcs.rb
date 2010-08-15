@@ -49,7 +49,7 @@ class VCSTest < Test::Unit::TestCase
   def test_git
     config = prepare
     gitroot = make_git
-    git = Gonzui::Git.new(config, gitroot, "foo")
+    git = Gonzui::Git.new(config, gitroot)
     git.extract
     cached_foo = File.join(config.cache_directory, "foo")
     entries = Dir.entries_without_dots(cached_foo)

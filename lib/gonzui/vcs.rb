@@ -105,16 +105,16 @@ module Gonzui
   end
 
   class Git < AbstractVCS
-    def initialize(config, root, mozule)
+    def initialize(config, root)
       require_command("git")
+      mozule = File.basename(URI.parse(root).path, ".git")
       super(config, root, mozule)
     end
 
     def do_checkout(output_directory)
       Dir.chdir(@config.cache_directory) {
-        command_line = sprintf("git clone %s %s", 
-                               shell_escape(@root), 
-                               shell_escape(@mozule))
+        command_line = sprintf("git clone %s",
+                               shell_escape(@root))
         run_command(command_line, "git clone")
       }
     end

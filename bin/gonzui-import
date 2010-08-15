@@ -24,7 +24,7 @@ class GonzuiImport < CommandLineApplication
     puts
     puts "  -a, --apt PACKAGE...           use apt-get to get a source package"
     puts "      --cvs REPOSITORY MODULE    use cvs to get a source tree"
-    puts "      --git REPOSITORY MODULE    use git to get a source tree"
+    puts "      --git REPOSITORY           use git to get a source tree"
     puts "      --svn REPOSITORY MODULE    use svn to get a source tree"
     puts "      --exclude=PATTERN          exclude files matching PATTERN"
     puts "                                 [#{@config.exclude_pattern.to_s}]"
@@ -52,7 +52,7 @@ class GonzuiImport < CommandLineApplication
   end
 
   def validate_combinations(options)
-    keys = ["apt", "cvs", "git", "svn"]
+    keys = ["apt", "cvs", "svn"]
     used_keys = keys.find_all {|key| options[key] }
     n = used_keys.length
     if n >= 2
@@ -92,8 +92,8 @@ class GonzuiImport < CommandLineApplication
       eprintf("--cvs REPOSITORY MODULE") if ARGV.length != 2
       @target_names = [[ARGV.first, ARGV.last]]
     elsif @use_git
-      eprintf("--git REPOSITORY MODULE") if ARGV.length != 2
-      @target_names = [[ARGV.first, ARGV.last]]
+      eprintf("--git REPOSITORY") if ARGV.length != 1
+      @target_names = [[ARGV.first]]
     elsif @use_svn
       eprintf("--svn REPOSITORY MODULE") if ARGV.length != 2
       @target_names = [[ARGV.first, ARGV.last]]
@@ -109,6 +109,8 @@ class GonzuiImport < CommandLineApplication
       return URI.for_cvs(repository, mozule)
     elsif @use_svn
       return URI.for_svn(repository, mozule)
+    elsif @use_git
+      return URI.for_git(repository)
     else
       assert_not_reached
     end
@@ -117,7 +119,7 @@ class GonzuiImport < CommandLineApplication
   def make_uri(target_name)
     if @use_apt
       return URI.for_apt(target_name)
-    elsif @use_cvs or @use_svn
+    elsif @use_cvs or @use_svn or @use_git
       return make_uri_for_vcs(target_name)
     end
 

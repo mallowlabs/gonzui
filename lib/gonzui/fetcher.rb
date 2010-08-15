@@ -297,9 +297,9 @@ module Gonzui
       uri.query = nil
       root = uri.to_s
       # FIXME: kludge for replacing file:/home/... ->
-      # file:///home/... because subversion doesn't allow
+      # file:///home/... because git doesn't allow
       # the former URI.
-      root.gsub!(%r!^file:/+!, "file:///") if uri.scheme == "file" 
+      root.gsub!(%r!^file:/+!, "file:///") if uri.scheme == "file"
       return Git.new(@config, root)
     end
 
