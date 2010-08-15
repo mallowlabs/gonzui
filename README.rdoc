@@ -121,6 +121,7 @@ The following software is not required but useful.
   * rpm, rpmbuild (.src.rpm)
 * Source Code Fetcher
   * apt-get (gonzui-import --apt)
+    * You need "dpkg-dev" package to fetch sources.
 * Version Control Systems
   * cvs (gonzui-import --cvs)
   * svn (gonzui-import --svn)

@@ -13,7 +13,7 @@ class ImporterTest < Test::Unit::TestCase
     remove_db(config)
     make_archives
 
-    importer = Importer.new(config)
+    importer = Gonzui::Importer.new(config)
     importer.import(url)
     begin
       importer.import(url)
