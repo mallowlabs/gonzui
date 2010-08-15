@@ -292,6 +292,7 @@ module Gonzui
 
     def get_extractor
       query = WEBrick::HTTPUtils.parse_query(@source_uri.query)
+      mozule = query["module"]
       uri = @source_uri.dup
       uri.scheme = query["original_scheme"] if query["original_scheme"]
       uri.query = nil
