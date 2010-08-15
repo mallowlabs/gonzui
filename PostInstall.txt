@@ -3,7 +3,7 @@ Welcome to gonzui!
 First, you must install Berkley DB 4.7 and
 bdb for ruby (http://raa.ruby-lang.org/project/bdb/).
 If you use Ubuntu linux, only type following commands.
- $ sudo apt-get install ilbdb-dev
+ $ sudo apt-get install libdb-dev
  $ sudo apt-get install libdb-ruby1.8
 
 First step:
