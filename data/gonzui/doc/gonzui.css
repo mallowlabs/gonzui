@@ -1,0 +1,279 @@
+a {
+	text-decoration: none;
+}
+
+a:active, a:focus, a:hover {
+	text-decoration: underline;
+}
+
+a.directory {
+	font-weight: bold;
+}
+
+a.file {
+}
+
+a.more {
+        font-size: smaller;
+	text-decoration: none;
+	color: gray;
+}
+
+a img {
+	border-style: none;
+}
+
+body { 
+        font-family: 'Lucida Sans Unicode', Verdana, sans-serif;
+        margin: 2em;
+        line-height: 150%;
+        background-color: white;
+}
+
+div.bar {
+        border-style: solid;
+        border-width: 0 1px 1px 0;
+	border-color:     #aaf;
+	background-color: #77f;
+	font-size: 5px; /* for IE */
+        height: 9px;
+}
+
+div.center {
+        text-align: center;
+}
+
+div.message {
+	margin-left: 2em;
+	margin-top: 1em;
+}
+
+div.notice {
+        color: gray;
+        font-size: small;
+	margin-bottom: 0.5em;
+}
+
+div.separator {
+        border-style: dotted;
+        border-width: 1px 0 0 0;
+        border-color: gray;
+        margin: 0.4em 0 0.4em 0;
+}
+
+div.footer {
+	text-align: center;
+	margin-top: 3em;
+	font-size: smaller;
+	line-height: 200%;
+}
+
+div.image {
+	text-align: center;
+        margin-top: 1.5em;
+}
+
+div.navi {
+	text-align: center;
+	margin-top: 3em;
+}
+
+div.advanced-search {
+        border-color: gray;
+        border-style: solid;
+        border-width: 1px 0 1px 0;
+	margin: 0
+}
+
+div.advanced-search form {
+	padding: 10px;
+	margin: 0;
+}
+
+div.isearch {
+	text-align: right;
+        border-color: gray;
+        border-style: solid;
+        border-width: 1px 0 1px 0;
+	padding: 6px 6px 4px 6px;
+}
+
+div.isearch p, div.isearch form {
+	margin: 0;
+}
+
+dt.package {
+	font-weight: bold;
+}
+
+dt.source {
+	text-indent: 1.5em;
+}
+
+form {
+	font-size: smaller;
+}
+
+h1 a {
+	color: black;
+	text-decoration: none;
+}
+
+table.status {
+	font-size: medium;
+        border-style: solid;
+        border-width: 1px 0 0 0;
+        border-color: black;
+	background-color: #e4e4e4;
+	padding-left: 2px;
+	width: 100%;
+}
+
+pre {
+	font-size: smaller;
+	line-height: 120%;
+	font-family: 'Lucida Console', 'Courier', 
+		     'Courier New', monospace;
+}
+
+pre.lines {
+	margin-top: 2px;
+        border-style: solid;
+        border-width: 1px;
+        border-color: gray;
+	padding: 0.4em;
+	margin-bottom: 0;
+}
+
+pre.lines strong {
+	background-color: #ffff88;
+}
+
+span.classdef, span.moduledef {
+	color: #44aa44;
+        font-weight: bold;
+}
+
+span.const {
+	color: #44aa44;
+}
+
+span.comment {
+	color: gray;
+}
+
+span.keyword {
+	color: #8800cc;
+}
+
+span.size {
+	font-size: smaller;
+        color: gray;
+}
+
+span.string, span.character {
+	color: #888800;
+}
+
+span.symbol {
+	color: #ff6666;
+}
+
+span.type {
+	color: #44aa44;
+}
+
+span.lineno, span.lineno a {
+	color: gray;
+	text-decoration: none;
+}
+
+span.lineno a:hover {
+        text-decoration: underline;
+}
+
+span.spacer {
+	padding-left:  0.5em;
+        padding-right: 0.5em;
+}
+
+strong.highlight {
+	background-color: #ffff88;
+}
+
+table.fullwidth {
+        width: 100%;
+        border-color: black;
+	border-collapse: collapse;
+	border-style: solid;
+	border-width: 1px 0 1px 0;
+        margin-bottom: 2em;
+}
+
+table.fullwidth td {
+        padding: 2px 8px 2px 8px;
+        border-color: #888;
+}
+
+table.item td {
+        padding: 0 1px 0 1px;
+}
+
+table.status td.center {
+	text-align: left;
+	font-size: smaller;
+}
+
+table.status td.left {
+	font-weight: bold;
+}
+
+table.status td.right {
+	text-align: right;
+	font-size: smaller;
+}
+
+td.first-center {
+	text-align: center;
+}
+
+td.function {
+        width: auto;
+}
+
+td.nonfirst, td.nonfirst-center, td.nonfirst-right {
+	border-style: solid;
+	border-width: 0 0 0 1px;
+}
+
+td.nonfirst-right {
+	text-align: right;
+}
+
+td.nonfirst-center {
+	text-align: center;
+}
+
+tr.even {
+	background-color: #e8ffd8;
+}
+
+tr.heading {
+        background-color: #ffeeee;
+        font-weight: bold;
+}
+
+tr.heading td.first,
+tr.heading td.first-center
+{
+	border-style: solid;
+	border-width: 0 0 1px 0px;
+}
+
+tr.heading td.nonfirst, 
+tr.heading td.nonfirst-center 
+{
+	border-style: solid;
+	border-width: 0 0 1px 1px;
+}
+

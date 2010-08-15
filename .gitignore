@@ -4,6 +4,6 @@ Makefile
 *.so
 *.dll
 pkg
-doc
+./doc
 .DS_Store
 
