@@ -101,7 +101,7 @@ For further information on usage, try --help option of each command.
 == REQUIREMENTS:
 * Ruby 1.8.2+
 * bdb 4.2+ (Berkeley DB)
- $ sudo apt-get install ilbdb-dev
+ $ sudo apt-get install libdb-dev
 
 === Ruby Libraries
 * langscan 1.2+
@@ -129,6 +129,9 @@ The following software is not required but useful.
 == INSTALL:
 
  $ sudo gem install gonzui
+
+If you use Ubuntu, add following path to $PATH
+ /usr/lib/gems/1.8/bin
 
 == LICENSE:
 Copyright (C) 2004-2005 Satoru Takabayashi <satoru@namazu.org>
