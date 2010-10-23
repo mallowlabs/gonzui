@@ -75,7 +75,7 @@ module Gonzui
 
   module BDBExtension
 	def duplicates(key , assoc = false)
-		super(key, assoc)
+		super(key, assoc) rescue super(key, 0) # hack for Windows
 	end
 
     def each_by_prefix(prefix)
